@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.demo</groupId>
+        <artifactId>demo</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>demo-foundation</artifactId>
+    <packaging>pom</packaging>
+    <name>demo-foundation</name>
+    <description>基础组件聚合模块：沉淀通用技术组件，供业务流程模块复用</description>
+
+    <modules>
+        <module>demo-foundation-core</module>
+        <module>demo-foundation-web</module>
+        <module>demo-foundation-mybatis</module>
+        <module>demo-foundation-domain</module>
+        <module>demo-foundation-extension</module>
+        <!-- 优先引入的组件 -->
+        <module>demo-foundation-lock</module>
+        <module>demo-foundation-message</module>
+        <module>demo-foundation-notify</module>
+    </modules>
+</project>

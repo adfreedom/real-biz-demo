@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- 继承 Spring Boot，统一三方依赖版本管理；如需 Java 17 可升级 parent -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.7.18</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+
+    <groupId>com.demo</groupId>
+    <artifactId>demo</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>demo</name>
+    <description>Demo 多模块工程：基础组件 + 业务流程</description>
+
+    <modules>
+        <!-- 基础组件模块 -->
+        <module>real-biz-demo-foundation</module>
+        <!-- 业务流程模块 -->
+        <module>real-biz-demo-business</module>
+    </modules>
+
+    <properties>
+        <java.version>1.8</java.version>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <demo.version>${project.version}</demo.version>
+        <mybatis-plus.version>3.5.3.1</mybatis-plus.version>
+        <hutool.version>5.8.25</hutool.version>
+        <!-- 基础组件三方依赖 -->
+        <spring-cloud.version>2021.0.8</spring-cloud.version>
+        <redisson.version>3.20.1</redisson.version>
+        <rocketmq-spring.version>2.2.3</rocketmq-spring.version>
+        <fastjson.version>1.2.83</fastjson.version>
+        <mysql.version>8.0.33</mysql.version>
+    </properties>
+
+    <!-- 内部模块版本统一在此声明，子模块引用无需写 version -->
+    <dependencyManagement>
+        <dependencies>
+            <!-- 基础组件 -->
+            <dependency>
+                <groupId>com.demo</groupId>
+                <artifactId>demo-foundation-core</artifactId>
+                <version>${demo.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.demo</groupId>
+                <artifactId>demo-foundation-web</artifactId>
+                <version>${demo.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.demo</groupId>
+                <artifactId>demo-foundation-mybatis</artifactId>
+                <version>${demo.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.demo</groupId>
+                <artifactId>demo-foundation-domain</artifactId>
+                <version>${demo.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.demo</groupId>
+                <artifactId>demo-foundation-extension</artifactId>
+                <version>${demo.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.demo</groupId>
+                <artifactId>demo-foundation-lock</artifactId>
+                <version>${demo.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.demo</groupId>
+                <artifactId>demo-foundation-message</artifactId>
+                <version>${demo.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.demo</groupId>
+                <artifactId>demo-foundation-notify</artifactId>
+                <version>${demo.version}</version>
+            </dependency>
+            <!-- 业务流程 -->
+            <dependency>
+                <groupId>com.demo</groupId>
+                <artifactId>demo-business-facade</artifactId>
+                <version>${demo.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.demo</groupId>
+                <artifactId>demo-business-domain</artifactId>
+                <version>${demo.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.demo</groupId>
+                <artifactId>demo-business-infrastructure</artifactId>
+                <version>${demo.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.demo</groupId>
+                <artifactId>demo-business-application</artifactId>
+                <version>${demo.version}</version>
+            </dependency>
+            <!-- 三方组件版本 -->
+            <!-- Spring Cloud BOM（openfeign 等由其管理版本） -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>${hutool.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.redisson</groupId>
+                <artifactId>redisson</artifactId>
+                <version>${redisson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.rocketmq</groupId>
+                <artifactId>rocketmq-spring-boot-starter</artifactId>
+                <version>${rocketmq-spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>${fastjson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+</project>

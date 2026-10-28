@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.demo</groupId>
+        <artifactId>demo-business</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>demo-business-web</artifactId>
+    <name>demo-business-web</name>
+    <description>启动与接入层：Controller、配置、Spring Boot 启动类</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.demo</groupId>
+            <artifactId>demo-business-application</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.demo</groupId>
+            <artifactId>demo-business-infrastructure</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.demo</groupId>
+            <artifactId>demo-foundation-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>

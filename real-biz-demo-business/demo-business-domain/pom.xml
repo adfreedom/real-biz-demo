@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.demo</groupId>
+        <artifactId>demo-business</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>demo-business-domain</artifactId>
+    <name>demo-business-domain</name>
+    <description>领域层：实体、聚合根、领域服务、仓储接口，业务核心规则</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.demo</groupId>
+            <artifactId>demo-foundation-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.demo</groupId>
+            <artifactId>demo-foundation-domain</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.demo</groupId>
+            <artifactId>demo-foundation-mybatis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.demo</groupId>
+            <artifactId>demo-foundation-extension</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.demo</groupId>
+            <artifactId>demo-business-facade</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
