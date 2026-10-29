@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 420" text-rendering="geometricPrecision">
+  <style>
+    .bg{fill:#fafbfc}
+    .title{font:600 20px ui-sans-serif,system-ui,sans-serif;fill:#1f2328}
+    .sub{font:13px ui-sans-serif,system-ui,sans-serif;fill:#656d76}
+    .dom{fill:#dafbe1;stroke:#1a7f37;stroke-width:1.5}
+    .app{fill:#fff8c5;stroke:#bf8700;stroke-width:1.5}
+    .web{fill:#ddf4ff;stroke:#0969da;stroke-width:1.5}
+    .fnd{fill:#eaeef2;stroke:#8c959f;stroke-width:1.5}
+    .h{font:600 13px ui-sans-serif,system-ui,sans-serif;fill:#1f2328}
+    .hW{font:600 13px ui-sans-serif,system-ui,sans-serif;fill:#ffffff}
+    .t{font:12px ui-sans-serif,system-ui,sans-serif;fill:#1f2328}
+    .m{font:11.5px ui-monospace,Consolas,Menlo,monospace;fill:#1f2328}
+    .note{font:12px ui-sans-serif,system-ui,sans-serif;fill:#656d76}
+    .arr{stroke:#6e7781;stroke-width:1.6;fill:none}
+  </style>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6e7781"/></marker>
+  </defs>
+  <rect class="bg" width="940" height="420"/>
+  <text x="32" y="42" class="title">通用枚举查询链路</text>
+  <text x="32" y="64" class="sub">枚举实现 BaseEnum → BaseType 注册 → 通用接口反射读取</text>
+
+  <!-- enums -->
+  <rect class="dom" x="40" y="110" width="200" height="140" rx="8"/>
+  <rect x="40" y="110" width="200" height="26" rx="8" fill="#1a7f37"/>
+  <text x="140" y="128" text-anchor="middle" class="hW">业务枚举</text>
+  <text x="56" y="156" class="m">PaymentType</text>
+  <text x="56" y="176" class="m">DiscountType</text>
+  <text x="56" y="196" class="m">FeeType</text>
+  <text x="56" y="216" class="m">SalesChannel</text>
+  <text x="56" y="236" class="m">EnableStatus</text>
+  <text x="56" y="244" class="t"></text>
+  <text x="140" y="244" text-anchor="middle" class="note">implements BaseEnum</text>
+
+  <!-- registry -->
+  <rect class="app" x="300" y="110" width="220" height="140" rx="8"/>
+  <rect x="300" y="110" width="220" height="26" rx="8" fill="#bf8700"/>
+  <text x="410" y="128" text-anchor="middle" class="hW">BaseType（注册表）</text>
+  <text x="316" y="156" class="m">PAYMENT_TYPE</text>
+  <text x="316" y="176" class="m">DISCOUNT_TYPE</text>
+  <text x="316" y="196" class="m">FEE_TYPE ...</text>
+  <text x="316" y="222" class="t">每项绑定枚举类</text>
+  <text x="316" y="240" class="t">+ 可选 EnumFilter</text>
+
+  <!-- controller -->
+  <rect class="web" x="580" y="110" width="320" height="140" rx="8"/>
+  <rect x="580" y="110" width="320" height="26" rx="8" fill="#0969da"/>
+  <text x="740" y="128" text-anchor="middle" class="hW">ValueObjectController</text>
+  <text x="596" y="156" class="m">GET open/value/object/list</text>
+  <text x="596" y="176" class="t">　?baseType=paymentType</text>
+  <text x="596" y="202" class="m">GET open/value/object/map</text>
+  <text x="596" y="222" class="t">　一次性返回全部（按 code 分组）</text>
+  <text x="596" y="242" class="t">@RequestParam BaseType 自动反查</text>
+
+  <line class="arr" x1="240" y1="180" x2="296" y2="180" marker-end="url(#a)"/>
+  <line class="arr" x1="520" y1="180" x2="576" y2="180" marker-end="url(#a)"/>
+
+  <!-- service -->
+  <rect class="app" x="300" y="290" width="600" height="90" rx="8"/>
+  <rect x="300" y="290" width="600" height="26" rx="8" fill="#bf8700"/>
+  <text x="600" y="308" text-anchor="middle" class="hW">ValueObjectServiceImpl</text>
+  <text x="316" y="336" class="t">反射 getEnumConstants() → ValueObjectDto(label/name/value)</text>
+  <text x="316" y="358" class="t">有 filter 则 EnumFilter.filterValue 按业务上下文裁剪可选项</text>
+
+  <line class="arr" x1="740" y1="250" x2="600" y2="286" marker-end="url(#a)"/>
+
+  <text x="32" y="402" class="note">新增枚举：① 写枚举 implements BaseEnum ② BaseType 加一行注册 → 前端立刻可查，零接口代码。</text>
+</svg>

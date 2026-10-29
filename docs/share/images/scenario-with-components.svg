@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 640" text-rendering="geometricPrecision">
+  <style>
+    .bg{fill:#fafbfc}
+    .title{font:600 20px ui-sans-serif,system-ui,sans-serif;fill:#1f2328}
+    .sub{font:13px ui-sans-serif,system-ui,sans-serif;fill:#656d76}
+    .step{fill:#ffffff;stroke:#d0d7de;stroke-width:1}
+    .sname{font:600 13.5px ui-sans-serif,system-ui,sans-serif;fill:#1f2328}
+    .srole{font:11.5px ui-sans-serif,system-ui,sans-serif;fill:#656d76}
+    .arr{stroke:#6e7781;stroke-width:1.8;fill:none}
+    .chip{stroke-width:1.4}
+    .ct{font:600 12.5px ui-sans-serif,system-ui,sans-serif;fill:#ffffff}
+    .cdesc{font:11px ui-sans-serif,system-ui,sans-serif;fill:#1f2328}
+    .link{stroke-width:1.2;stroke-dasharray:4 3;fill:none}
+    .note{font:12px ui-sans-serif,system-ui,sans-serif;fill:#656d76}
+  </style>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6e7781"/></marker>
+  </defs>
+  <rect class="bg" width="960" height="640"/>
+  <text x="32" y="40" class="title">场景与组件串联</text>
+  <text x="32" y="62" class="sub">一条下单/结算链路里，5 个基础组件各自的落点</text>
+
+  <!-- central pipeline -->
+  <rect class="step" x="120" y="92" width="320" height="52" rx="8"/>
+  <text x="280" y="116" text-anchor="middle" class="sname">网关鉴权</text>
+  <text x="280" y="134" text-anchor="middle" class="srole">写 userId / username / clientIp 头</text>
+  <line class="arr" x1="280" y1="144" x2="280" y2="166" marker-end="url(#a)"/>
+
+  <rect class="step" x="120" y="168" width="320" height="52" rx="8"/>
+  <text x="280" y="192" text-anchor="middle" class="sname">Controller.placeOrder</text>
+  <text x="280" y="210" text-anchor="middle" class="srole">@RequestBody PlaceOrderRequest</text>
+  <line class="arr" x1="280" y1="220" x2="280" y2="242" marker-end="url(#a)"/>
+
+  <rect class="step" x="120" y="244" width="320" height="52" rx="8"/>
+  <text x="280" y="268" text-anchor="middle" class="sname">TradeAppService.placeOrder</text>
+  <text x="280" y="286" text-anchor="middle" class="srole">编排 + 事务边界</text>
+  <line class="arr" x1="280" y1="296" x2="280" y2="318" marker-end="url(#a)"/>
+
+  <rect class="step" x="120" y="320" width="320" height="52" rx="8"/>
+  <text x="280" y="344" text-anchor="middle" class="sname">placeProcess + 聚合内聚</text>
+  <text x="280" y="362" text-anchor="middle" class="srole">单号/校验/算价/挂组</text>
+  <line class="arr" x1="280" y1="372" x2="280" y2="394" marker-end="url(#a)"/>
+
+  <rect class="step" x="120" y="396" width="320" height="52" rx="8"/>
+  <text x="280" y="420" text-anchor="middle" class="sname">repository.saveChanges</text>
+  <text x="280" y="438" text-anchor="middle" class="srole">事务内落库</text>
+  <line class="arr" x1="280" y1="448" x2="280" y2="470" marker-end="url(#a)"/>
+
+  <rect class="step" x="120" y="472" width="320" height="44" rx="8"/>
+  <text x="280" y="499" text-anchor="middle" class="sname">返回 Result</text>
+
+  <!-- component chips on right -->
+  <!-- 登录注入 → Controller -->
+  <path class="link" stroke="#0969da" d="M560,194 C620,194 640,150 700,150"/>
+  <rect class="chip" x="700" y="128" width="232" height="46" rx="8" fill="#0969da" stroke="#0969da"/>
+  <text x="816" y="149" text-anchor="middle" class="ct">登录信息注入</text>
+  <text x="816" y="166" text-anchor="middle" class="cdesc" fill="#ddf4ff">DTO implements IUserContext，userId 回填</text>
+
+  <!-- 全局日志 → Controller (lower) -->
+  <path class="link" stroke="#6e7781" d="M440,205 C560,205 600,210 700,210"/>
+  <rect class="chip" x="700" y="188" width="232" height="46" rx="8" fill="#57606a" stroke="#57606a"/>
+  <text x="816" y="209" text-anchor="middle" class="ct">全局日志</text>
+  <text x="816" y="226" text-anchor="middle" class="cdesc" fill="#eaeef2">@PostMapping 自动记录 URL/参数/耗时</text>
+
+  <!-- 分布式锁 → AppService -->
+  <path class="link" stroke="#1a7f37" d="M440,270 C560,270 600,278 700,278"/>
+  <rect class="chip" x="700" y="256" width="232" height="46" rx="8" fill="#1a7f37" stroke="#1a7f37"/>
+  <text x="816" y="277" text-anchor="middle" class="ct">分布式锁</text>
+  <text x="816" y="294" text-anchor="middle" class="cdesc" fill="#dafbe1">@ConcurrencyFilter 防并发</text>
+
+  <!-- 数据落库 → repository -->
+  <path class="link" stroke="#8250df" d="M440,422 C560,422 600,350 700,350"/>
+  <rect class="chip" x="700" y="328" width="232" height="46" rx="8" fill="#8250df" stroke="#8250df"/>
+  <text x="816" y="349" text-anchor="middle" class="ct">数据落库</text>
+  <text x="816" y="366" text-anchor="middle" class="cdesc" fill="#f1e2ff">EntitySelectInterceptor 驱动 diff-save</text>
+
+  <!-- 通用枚举查询 → 前端首屏 (separate) -->
+  <rect class="step" x="120" y="540" width="320" height="52" rx="8" stroke="#0969da"/>
+  <text x="280" y="564" text-anchor="middle" class="sname">前端首屏拉字典</text>
+  <text x="280" y="582" text-anchor="middle" class="srole">GET open/value/object/map</text>
+  <path class="link" stroke="#0969da" d="M440,566 C560,566 600,420 700,420"/>
+  <rect class="chip" x="700" y="398" width="232" height="46" rx="8" fill="#0969da" stroke="#0969da"/>
+  <text x="816" y="419" text-anchor="middle" class="ct">通用枚举查询</text>
+  <text x="816" y="436" text-anchor="middle" class="cdesc" fill="#ddf4ff">支付方式/费项类型，新增枚举零接口</text>
+
+  <text x="32" y="624" class="note">业务代码里看不到 getHeader / logger / try-lock-finally / 手动 diff —— 全由组件兜底，故 placeOrder 仅十来行。</text>
+</svg>

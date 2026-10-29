@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 580" text-rendering="geometricPrecision">
+  <style>
+    .bg{fill:#fafbfc}
+    .title{font:600 20px ui-sans-serif,system-ui,sans-serif;fill:#1f2328}
+    .sub{font:13px ui-sans-serif,system-ui,sans-serif;fill:#656d76}
+    .box{fill:#ffffff;stroke:#d0d7de;stroke-width:1}
+    .hdr{font:600 14px ui-sans-serif,system-ui,sans-serif;fill:#1f2328}
+    .hdrW{font:600 14px ui-sans-serif,system-ui,sans-serif;fill:#ffffff}
+    .mem{font:12.5px ui-monospace,Consolas,Menlo,monospace;fill:#1f2328}
+    .stereo{font:italic 12px ui-sans-serif,system-ui,sans-serif;fill:#656d76}
+    .arr{stroke:#1f2328;stroke-width:1.4;fill:none}
+    .dash{stroke:#0969da;stroke-width:1.4;fill:none;stroke-dasharray:5 4}
+    .note{font:12px ui-sans-serif,system-ui,sans-serif;fill:#656d76}
+    .lbl{font:12px ui-sans-serif,system-ui,sans-serif;fill:#0969da}
+    .agg{fill:#dafbe1;stroke:#1a7f37;stroke-width:1.5}
+    .po{fill:#fff8c5;stroke:#bf8700;stroke-width:1}
+  </style>
+  <defs>
+    <marker id="tri" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="13" markerHeight="13" orient="auto"><path d="M1,1 L11,6 L1,11 z" fill="#ffffff" stroke="#1f2328" stroke-width="1"/></marker>
+    <marker id="od" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#0969da"/></marker>
+  </defs>
+  <rect class="bg" width="940" height="580"/>
+  <text x="32" y="42" class="title">聚合根与基类</text>
+  <text x="32" y="64" class="sub">通用字段上浮到基类 · 领域聚合与持久化 PO 分离</text>
+
+  <!-- Entity -->
+  <rect class="box" x="50" y="90" width="300" height="170" rx="6"/>
+  <rect x="50" y="90" width="300" height="30" rx="6" fill="#0969da"/>
+  <rect x="50" y="114" width="300" height="6" fill="#0969da"/>
+  <text x="200" y="111" text-anchor="middle" class="hdrW">Entity（持久化基类）</text>
+  <text x="66" y="138" class="mem">+ id : Long            @TableId</text>
+  <text x="66" y="156" class="mem">+ hashCode : int       @TableField(exist=false)</text>
+  <text x="66" y="174" class="mem">+ stringValue : String @TableField(exist=false)</text>
+  <text x="66" y="200" class="mem">+ monitor()</text>
+  <text x="66" y="218" class="mem">+ isTransient() : boolean</text>
+  <text x="66" y="236" class="mem">+ isModified() : boolean</text>
+
+  <!-- CreationAuditedEntity -->
+  <rect class="box" x="50" y="300" width="300" height="150" rx="6"/>
+  <rect x="50" y="300" width="300" height="30" rx="6" fill="#0969da"/>
+  <rect x="50" y="324" width="300" height="6" fill="#0969da"/>
+  <text x="200" y="321" text-anchor="middle" class="hdrW">CreationAuditedEntity</text>
+  <text x="66" y="348" class="mem">+ createdTime / lastModifiedTime</text>
+  <text x="66" y="366" class="mem">+ createdBy / lastModifiedBy</text>
+  <text x="66" y="384" class="mem">+ version      @Version（乐观锁）</text>
+  <text x="66" y="402" class="mem">+ isDeleted    @TableLogic（逻辑删除）</text>
+  <text x="66" y="430" class="stereo">extends Entity</text>
+
+  <!-- inheritance: CreationAuditedEntity -> Entity -->
+  <line class="arr" x1="200" y1="300" x2="200" y2="266" marker-end="url(#tri)"/>
+
+  <!-- AggregateRoot -->
+  <rect class="box" x="690" y="90" width="220" height="80" rx="6" stroke-dasharray="5 4"/>
+  <text x="800" y="118" text-anchor="middle" class="stereo">«abstract»</text>
+  <text x="800" y="138" text-anchor="middle" class="hdr">AggregateRoot</text>
+  <text x="800" y="158" text-anchor="middle" class="mem">+ isTransient() : boolean</text>
+
+  <!-- SalesOrderEntity (PO) -->
+  <rect class="po" x="400" y="300" width="260" height="80" rx="6"/>
+  <text x="530" y="326" text-anchor="middle" class="stereo">«PO 持久化对象»</text>
+  <text x="530" y="346" text-anchor="middle" class="hdr">SalesOrderEntity</text>
+  <text x="530" y="368" text-anchor="middle" class="mem">orderNo / totalAmount / settled ...</text>
+  <!-- inheritance to CreationAuditedEntity -->
+  <line class="arr" x1="400" y1="340" x2="354" y2="340" marker-end="url(#tri)"/>
+
+  <!-- SalesOrder (aggregate) -->
+  <rect class="agg" x="400" y="420" width="510" height="130" rx="6"/>
+  <text x="655" y="448" text-anchor="middle" class="stereo">«领域聚合根»</text>
+  <text x="655" y="468" text-anchor="middle" class="hdr">SalesOrder</text>
+  <text x="416" y="492" class="mem">- salesOrderEntity : SalesOrderEntity</text>
+  <text x="416" y="510" class="mem">- itemList / discountList / paymentList / feeList</text>
+  <text x="700" y="492" class="mem">+ assignOrderNo()</text>
+  <text x="700" y="510" class="mem">+ recalculateTotalAmount()</text>
+  <text x="700" y="528" class="mem">+ settle() / complete() / addPayList()</text>
+
+  <!-- wraps dashed arrow -->
+  <line class="dash" x1="530" y1="420" x2="530" y2="384" marker-end="url(#od)"/>
+  <text x="540" y="406" class="lbl">wraps（包装）</text>
+
+  <text x="32" y="566" class="note">Entity / CreationAuditedEntity 收敛通用关注点；SalesOrder（领域）包装 SalesOrderEntity（PO），域行为内聚在聚合上。</text>
+</svg>

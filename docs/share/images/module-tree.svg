@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 580" text-rendering="geometricPrecision">
+  <style>
+    .bg{fill:#fafbfc}
+    .title{font:600 20px ui-sans-serif,system-ui,sans-serif;fill:#1f2328}
+    .sub{font:13px ui-sans-serif,system-ui,sans-serif;fill:#656d76}
+    .pF{fill:#ddf4ff;stroke:#0969da;stroke-width:1.5}
+    .pB{fill:#dafbe1;stroke:#1a7f37;stroke-width:1.5}
+    .hF{font:600 15px ui-sans-serif,system-ui,sans-serif;fill:#ffffff}
+    .hB{font:600 15px ui-sans-serif,system-ui,sans-serif;fill:#ffffff}
+    .role{font:12px ui-sans-serif,system-ui,sans-serif;fill:#656d76}
+    .mod{font:14px ui-monospace,Consolas,Menlo,monospace;fill:#1f2328}
+    .desc{font:12.5px ui-sans-serif,system-ui,sans-serif;fill:#1f2328}
+    .note{font:12px ui-sans-serif,system-ui,sans-serif;fill:#656d76}
+    .arr{stroke:#1f2328;stroke-width:2;fill:none}
+    .lbl{font:600 12px ui-sans-serif,system-ui,sans-serif;fill:#1f2328}
+  </style>
+  <defs>
+    <marker id="ab" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1f2328"/></marker>
+  </defs>
+  <rect class="bg" width="960" height="580"/>
+  <text x="30" y="40" class="title">两个独立工程的结构</text>
+  <text x="30" y="62" class="sub">基础组件库 · 业务系统 —— 实际分属两个仓库，本项目合并展示</text>
+
+  <!-- foundation repo panel -->
+  <rect class="pF" x="30" y="90" width="430" height="450" rx="10"/>
+  <rect x="30" y="90" width="430" height="34" rx="10" fill="#0969da"/>
+  <rect x="30" y="116" width="430" height="8" fill="#0969da"/>
+  <text x="48" y="113" class="hF">仓库 ① 基础组件库 foundation</text>
+  <text x="48" y="142" class="role">可被任意业务复用 · 不依赖任何业务</text>
+
+  <text x="48" y="176" class="mod">├─ core</text>        <text x="170" y="176" class="desc">常量 / 枚举 / 异常 / 通用 DTO</text>
+  <text x="48" y="200" class="mod">├─ web</text>         <text x="170" y="200" class="desc">统一返回体 / 全局异常 / 登录注入</text>
+  <text x="48" y="224" class="mod">├─ mybatis</text>     <text x="170" y="224" class="desc">持久化基类 / 拦截器 / Mapper 扩展</text>
+  <text x="48" y="248" class="mod">├─ domain</text>      <text x="170" y="248" class="desc">AggregateRoot / BaseEnum / 用户上下文</text>
+  <text x="48" y="272" class="mod">├─ extension</text>   <text x="170" y="272" class="desc">错误码 / 业务码 / 枚举字典</text>
+  <text x="48" y="296" class="mod">├─ lock</text>        <text x="170" y="296" class="desc">分布式锁（Redisson 注解式）</text>
+  <text x="48" y="320" class="mod">├─ message</text>     <text x="170" y="320" class="desc">消息组件（RocketMQ 封装）</text>
+  <text x="48" y="344" class="mod">└─ notify</text>      <text x="170" y="344" class="desc">通知组件（短信 / 邮件 / 站内信）</text>
+
+  <!-- business repo panel -->
+  <rect class="pB" x="500" y="90" width="430" height="450" rx="10"/>
+  <rect x="500" y="90" width="430" height="34" rx="10" fill="#1a7f37"/>
+  <rect x="500" y="116" width="430" height="8" fill="#1a7f37"/>
+  <text x="518" y="113" class="hB">仓库 ② 业务系统 business</text>
+  <text x="518" y="142" class="role">消费基础组件库 · DDD 五层</text>
+
+  <text x="518" y="176" class="mod">├─ facade</text>          <text x="660" y="176" class="desc">对外接口契约 / DTO</text>
+  <text x="518" y="200" class="mod">├─ domain</text>          <text x="660" y="200" class="desc">实体 / 聚合根 / 仓储接口</text>
+  <text x="518" y="224" class="mod">├─ infrastructure</text>  <text x="660" y="224" class="desc">仓储实现 / Mapper</text>
+  <text x="518" y="248" class="mod">├─ application</text>     <text x="660" y="248" class="desc">流程编排 / 事务边界 / 应用服务</text>
+  <text x="518" y="272" class="mod">└─ web</text>             <text x="660" y="272" class="desc">Controller / 配置 / 启动类</text>
+
+  <text x="518" y="316" class="role">五层依赖单向：facade ← domain ← infrastructure</text>
+  <text x="518" y="336" class="role">　　　　　　　facade / domain ← application ← web</text>
+
+  <!-- dependency arrow: business -> foundation -->
+  <line class="arr" x1="495" y1="370" x2="465" y2="370" marker-end="url(#ab)"/>
+  <text x="480" y="362" text-anchor="middle" class="lbl">依赖</text>
+  <text x="480" y="392" text-anchor="middle" class="note">业务系统依赖组件库，反之不成立</text>
+
+  <text x="30" y="560" class="note">两个仓库各自开发、发版；组件库不知道业务存在，业务系统按需引入组件库的模块。</text>
+</svg>

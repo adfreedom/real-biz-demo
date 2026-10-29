@@ -1,23 +1,65 @@
 # 1.2 pom 依赖方向
 
-> 预计讲解时长：~2 分钟
-> 部分：一、代码概览
+模块多不可怕，可怕的是依赖乱。这个工程的依赖方向**严格单向**，用一句话概括：**business 依赖 foundation，foundation 永远不反向依赖 business。**
 
-依赖单向、不回流：foundation 不反向依赖 business。
+## 依赖方向图
 
-![pom 依赖方向](../images/pom-dependency.png)
+```
+                 ┌──────── foundation（基础组件）────────┐
+                 │   core ← web                          │
+                 │   core ← mybatis                      │
+                 │   core ← domain                       │
+                 │   core ← extension                    │
+                 │   (lock / message / notify 独立)      │
+                 └───────────────────────────────────────┘
+                                   ▲
+                                   │ 依赖
+                                   │
+┌──────── business（业务流程，DDD 五层）────────┐
+│   facade ← domain ← infrastructure           │
+│   facade / domain ← application ← web        │
+└──────────────────────────────────────────────┘
+```
 
-## 要点
+![pom 依赖方向](../images/pom-dependency.svg)
 
-- foundation 内部：core ← web / mybatis / domain / extension
-- business 内部：facade ← domain ← infrastructure；facade / domain ← application ← web
-- business 依赖 foundation，反之不成立
-- 单向依赖保证基础组件可被其他业务复用
+## 用 pom 代码佐证
 
-## 截图建议
+**foundation-web 只依赖 core，不碰任何 business：**
 
-用依赖方向图（mermaid 或画图工具）比截图清晰；或截几个关键 pom 的 dependencies 段佐证。
+```xml
+<!-- demo-foundation-web/pom.xml -->
+<dependencies>
+    <dependency>
+        <groupId>com.demo</groupId>
+        <artifactId>demo-foundation-core</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>com.demo</groupId>
+        <artifactId>demo-foundation-domain</artifactId>
+    </dependency>
+    <!-- spring-boot-starter-web / aop / openfeign / fastjson -->
+</dependencies>
+```
+
+**business-application 依赖 domain + facade + foundation-web + foundation-lock，方向永远向下：**
+
+```xml
+<!-- demo-business-application/pom.xml -->
+<dependencies>
+    <dependency><groupId>com.demo</groupId><artifactId>demo-business-domain</artifactId></dependency>
+    <dependency><groupId>com.demo</groupId><artifactId>demo-business-facade</artifactId></dependency>
+    <dependency><groupId>com.demo</groupId><artifactId>demo-foundation-web</artifactId></dependency>
+    <dependency><groupId>com.demo</groupId><artifactId>demo-foundation-lock</artifactId></dependency>
+</dependencies>
+```
+
+## 关键点
+
+- **单向依赖是复用的前提**：foundation 不依赖 business，所以可以把 foundation 整包拷到另一个业务工程直接用。如果 foundation 里出现了一行 `import com.demo.business...`，这条线就断了——这是评审红线。
+- **DDD 五层依赖也单向**：domain 不依赖 infrastructure（领域不关心落地），infrastructure 依赖 domain 实现仓储；application 编排 domain，web 启动 application。倒过来就乱。
+- **版本统一在根 POM 的 `dependencyManagement`**：所有内部模块版本用 `${demo.version}`，子模块引用不写 version，避免版本漂移。
 
 ---
 
-下一节 → [1.3 DDD 五层职责](./03-ddd-layers.md)
+← [上一节：1.1 多模块分层树](./01-module-tree.md) ｜ [下一节：1.3 DDD 五层职责](./03-ddd-layers.md) →

@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 480" text-rendering="geometricPrecision">
+  <style>
+    .bg{fill:#fafbfc}
+    .title{font:600 20px ui-sans-serif,system-ui,sans-serif;fill:#1f2328}
+    .sub{font:13px ui-sans-serif,system-ui,sans-serif;fill:#656d76}
+    .gw{fill:#eaeef2;stroke:#8c959f;stroke-width:1.5}
+    .web{fill:#dafbe1;stroke:#1a7f37;stroke-width:1.5}
+    .fnd{fill:#ddf4ff;stroke:#0969da;stroke-width:1.5}
+    .h{font:600 14px ui-sans-serif,system-ui,sans-serif;fill:#1f2328}
+    .t{font:12.5px ui-sans-serif,system-ui,sans-serif;fill:#1f2328}
+    .m{font:12px ui-monospace,Consolas,Menlo,monospace;fill:#1f2328}
+    .note{font:12px ui-sans-serif,system-ui,sans-serif;fill:#656d76}
+    .arr{stroke:#6e7781;stroke-width:1.6;fill:none}
+  </style>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6e7781"/></marker>
+  </defs>
+  <rect class="bg" width="940" height="480"/>
+  <text x="32" y="42" class="title">登录信息优雅注入（双通路）</text>
+  <text x="32" y="64" class="sub">网关写头 → 拦截器落 ThreadLocal → 参数解析器装配</text>
+
+  <!-- gateway -->
+  <rect class="gw" x="40" y="100" width="160" height="70" rx="8"/>
+  <text x="120" y="128" text-anchor="middle" class="h">网关</text>
+  <text x="120" y="150" text-anchor="middle" class="t">写头 userId / username</text>
+  <text x="120" y="166" text-anchor="middle" class="t">tenantId / clientIp</text>
+
+  <!-- interceptor -->
+  <rect class="fnd" x="260" y="100" width="240" height="70" rx="8"/>
+  <text x="380" y="126" text-anchor="middle" class="h">LoginHandlerInterceptor</text>
+  <text x="380" y="146" text-anchor="middle" class="m">preHandle: UserInfoContext.set</text>
+  <text x="380" y="164" text-anchor="middle" class="m">afterCompletion: remove</text>
+
+  <!-- threadlocal -->
+  <rect class="fnd" x="560" y="100" width="200" height="70" rx="8" stroke-dasharray="5 4"/>
+  <text x="660" y="126" text-anchor="middle" class="h">UserInfoContext</text>
+  <text x="660" y="148" text-anchor="middle" class="m">ThreadLocal&lt;UserInfo&gt;</text>
+  <text x="660" y="166" text-anchor="middle" class="note">请求级、自动清除</text>
+
+  <line class="arr" x1="200" y1="135" x2="256" y2="135" marker-end="url(#a)"/>
+  <line class="arr" x1="500" y1="135" x2="556" y2="135" marker-end="url(#a)"/>
+
+  <!-- two paths -->
+  <text x="380" y="210" text-anchor="middle" class="note">↓ 两条并行装配通路</text>
+
+  <!-- path A -->
+  <rect class="web" x="60" y="230" width="380" height="150" rx="8"/>
+  <rect x="60" y="230" width="380" height="28" rx="8" fill="#1a7f37"/>
+  <text x="250" y="250" text-anchor="middle" class="h" fill="#ffffff">通路 A：@LoginUser 参数解析器</text>
+  <text x="78" y="278" class="m">@LoginUser UserRequestContext user</text>
+  <text x="78" y="300" class="t">supportsParameter: @LoginUser + UserContext 子类</text>
+  <text x="78" y="320" class="t">resolveArgument: new UserRequestContext()</text>
+  <text x="78" y="340" class="t">　 装配 userId / userName / clientIp / requestSource</text>
+  <text x="78" y="362" class="note">适合：方法只需登录上下文本身</text>
+
+  <!-- path B -->
+  <rect class="web" x="500" y="230" width="380" height="150" rx="8"/>
+  <rect x="500" y="230" width="380" height="28" rx="8" fill="#1a7f37"/>
+  <text x="690" y="250" text-anchor="middle" class="h" fill="#ffffff">通路 B：@RequestBody 回填</text>
+  <text x="518" y="278" class="m">@RequestBody PlaceOrderRequest req</text>
+  <text x="518" y="300" class="t">supportsParameter: @RequestBody + IUserContext</text>
+  <text x="518" y="320" class="t">resolveArgument: super 反序列化 → 回填</text>
+  <text x="518" y="340" class="t">　 IUserContext.setUserId/Name + IClientContext.setIp/Source</text>
+  <text x="518" y="362" class="note">链首插入（RequestMappingHandlerAdapterWrap）</text>
+
+  <line class="arr" x1="300" y1="172" x2="250" y2="226" marker-end="url(#a)"/>
+  <line class="arr" x1="460" y1="172" x2="690" y2="226" marker-end="url(#a)"/>
+
+  <text x="32" y="430" class="note">共同数据源是 ThreadLocal；DTO 实现 IUserContext 即自动回填身份，Controller 不写一行 getHeader。</text>
+  <text x="32" y="450" class="note">IUserContext extends IClientContext → 身份字段 + 客户端字段一次补齐；两套通路互不依赖、按需选用。</text>
+</svg>

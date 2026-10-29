@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 600" text-rendering="geometricPrecision">
+  <style>
+    .bg{fill:#fafbfc}
+    .title{font:600 20px ui-sans-serif,system-ui,sans-serif;fill:#1f2328}
+    .sub{font:13px ui-sans-serif,system-ui,sans-serif;fill:#656d76}
+    .box{fill:#ffffff;stroke:#d0d7de;stroke-width:1}
+    .core{fill:#1f2328;stroke:#1f2328}
+    .coreW{font:600 15px ui-sans-serif,system-ui,sans-serif;fill:#ffffff}
+    .name{font:600 13.5px ui-sans-serif,system-ui,sans-serif;fill:#1f2328}
+    .role{font:11.5px ui-sans-serif,system-ui,sans-serif;fill:#656d76}
+    .badge{fill:#0969da}
+    .badgeT{font:600 11px ui-sans-serif,system-ui,sans-serif;fill:#ffffff}
+    .lock{fill:#1a7f37}
+    .lockT{font:600 11px ui-sans-serif,system-ui,sans-serif;fill:#ffffff}
+    .arr{stroke:#6e7781;stroke-width:1.8;fill:none}
+    .bandOut{fill:#fff8c5;stroke:#e3b341;stroke-width:1}
+    .bandIn{fill:#dafbe1;stroke:#1a7f37;stroke-width:1}
+    .bandT{font:600 12px ui-sans-serif,system-ui,sans-serif}
+    .note{font:12px ui-sans-serif,system-ui,sans-serif;fill:#656d76}
+    .agg{fill:#f6f8fa;stroke:#8250df;stroke-width:1.4}
+    .aggT{font:600 12.5px ui-sans-serif,system-ui,sans-serif;fill:#8250df}
+    .aggS{font:11px ui-sans-serif,system-ui,sans-serif;fill:#8250df}
+  </style>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6e7781"/></marker>
+  </defs>
+  <rect class="bg" width="940" height="600"/>
+  <text x="32" y="40" class="title">结算场景编排</text>
+  <text x="32" y="62" class="sub">settle · processor 退化为校验+数据准备 · 结算逻辑全在聚合</text>
+
+  <!-- settle -->
+  <rect class="core" x="320" y="84" width="300" height="50" rx="8"/>
+  <text x="470" y="108" text-anchor="middle" class="coreW">settle(request)</text>
+  <rect class="lock" x="566" y="76" width="118" height="20" rx="10"/>
+  <text x="625" y="90" text-anchor="middle" class="lockT">@ConcurrencyFilter</text>
+  <line class="arr" x1="470" y1="134" x2="470" y2="158" marker-end="url(#a)"/>
+
+  <!-- load -->
+  <rect class="box" x="240" y="160" width="460" height="44" rx="8"/>
+  <text x="470" y="187" text-anchor="middle" class="name">findByOrderNos + findByGroupNo → SettleContext</text>
+  <line class="arr" x1="470" y1="204" x2="470" y2="226" marker-end="url(#a)"/>
+
+  <!-- 事务外 band -->
+  <rect class="bandOut" x="40" y="228" width="860" height="128" rx="10"/>
+  <text x="58" y="250" class="bandT" fill="#7d4e00">事务外</text>
+  <rect class="core" x="350" y="244" width="240" height="38" rx="8"/>
+  <text x="470" y="268" text-anchor="middle" class="coreW">tradeActionExecutor.settleProcess(ctx)</text>
+
+  <!-- 2 processors -->
+  <g>
+    <rect class="box" x="180" y="298" width="260" height="48" rx="8"/>
+    <text x="310" y="320" text-anchor="middle" class="name">SettleDataValidation</text>
+    <text x="310" y="338" text-anchor="middle" class="role">合并组/订单/归属校验</text>
+    <circle class="badge" cx="426" cy="312" r="12"/><text x="426" y="316" text-anchor="middle" class="badgeT">10</text>
+  </g>
+  <g>
+    <rect class="box" x="500" y="298" width="260" height="48" rx="8"/>
+    <text x="630" y="320" text-anchor="middle" class="name">PaymentPreparation</text>
+    <text x="630" y="338" text-anchor="middle" class="role">支付明细映射+补单号</text>
+    <circle class="badge" cx="746" cy="312" r="12"/><text x="746" y="316" text-anchor="middle" class="badgeT">50</text>
+  </g>
+  <line class="arr" x1="440" y1="322" x2="498" y2="322" marker-end="url(#a)"/>
+  <line class="arr" x1="470" y1="356" x2="470" y2="378" marker-end="url(#a)"/>
+
+  <!-- 聚合内聚 -->
+  <rect class="agg" x="240" y="380" width="460" height="86" rx="10"/>
+  <text x="470" y="406" text-anchor="middle" class="aggT">group.complete(orderList, newPaymentList, uc)</text>
+  <text x="470" y="430" text-anchor="middle" class="aggS">settle：挂主单支付 + 足额校验 + 逐单标记已支付</text>
+  <text x="470" y="450" text-anchor="middle" class="aggS">逐单 complete：确认收货</text>
+  <line class="arr" x1="470" y1="466" x2="470" y2="488" marker-end="url(#a)"/>
+
+  <!-- 事务内 band -->
+  <rect class="bandIn" x="40" y="490" width="860" height="80" rx="10"/>
+  <text x="58" y="512" class="bandT" fill="#1a7f37">事务内</text>
+  <rect class="box" x="150" y="522" width="300" height="40" rx="8"/>
+  <text x="300" y="547" text-anchor="middle" class="name">mergePayGroupRepository.saveChanges(group)</text>
+  <rect class="box" x="490" y="522" width="300" height="40" rx="8"/>
+  <text x="640" y="547" text-anchor="middle" class="name">salesOrderRepository.saveChanges(orders)</text>
+  <text x="470" y="586" text-anchor="middle" class="note">processor 不碰聚合字段 —— 足额校验/挂主单/逐单推进全在 MergePayGroup 内</text>
+</svg>

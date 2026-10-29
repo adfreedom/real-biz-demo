@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 470" text-rendering="geometricPrecision">
+  <style>
+    .bg{fill:#fafbfc}
+    .title{font:600 20px ui-sans-serif,system-ui,sans-serif;fill:#1f2328}
+    .sub{font:13px ui-sans-serif,system-ui,sans-serif;fill:#656d76}
+    .row{fill:#ffffff;stroke:#d0d7de;stroke-width:1}
+    .tab{stroke-width:0}
+    .name{font:600 15px ui-monospace,Consolas,Menlo,monospace;fill:#1f2328}
+    .put{font:13px ui-sans-serif,system-ui,sans-serif;fill:#1f2328}
+    .no{font:13px ui-sans-serif,system-ui,sans-serif;fill:#cf222e}
+    .hd{font:600 12px ui-sans-serif,system-ui,sans-serif;fill:#656d76}
+    .arr{stroke:#6e7781;stroke-width:1.5;fill:none}
+    .note{font:12px ui-sans-serif,system-ui,sans-serif;fill:#656d76}
+  </style>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6e7781"/></marker>
+  </defs>
+  <rect class="bg" width="940" height="470"/>
+  <text x="32" y="42" class="title">DDD 五层职责</text>
+  <text x="32" y="64" class="sub">每层职责清晰、互不越界 · 依赖方向向下</text>
+
+  <!-- header -->
+  <text x="200" y="100" class="hd">层</text>
+  <text x="360" y="100" class="hd">放什么</text>
+  <text x="700" y="100" class="hd">不放什么</text>
+
+  <!-- rows -->
+  <g>
+    <rect class="row" x="60" y="112" width="820" height="46" rx="6"/>
+    <rect class="tab" x="60" y="112" width="10" height="46" fill="#0969da"/>
+    <text x="90" y="141" class="name">facade</text>
+    <text x="360" y="141" class="put">接口契约 · Request / Result DTO</text>
+    <text x="700" y="141" class="no">✗ 业务逻辑</text>
+  </g>
+  <g>
+    <rect class="row" x="60" y="166" width="820" height="46" rx="6"/>
+    <rect class="tab" x="60" y="166" width="10" height="46" fill="#1a7f37"/>
+    <text x="90" y="195" class="name">domain</text>
+    <text x="360" y="195" class="put">实体 · 聚合根 · 领域行为 · 仓储接口</text>
+    <text x="700" y="195" class="no">✗ DB 细节 · 事务 · 远程调用</text>
+  </g>
+  <g>
+    <rect class="row" x="60" y="220" width="820" height="46" rx="6"/>
+    <rect class="tab" x="60" y="220" width="10" height="46" fill="#8250df"/>
+    <text x="90" y="249" class="name">infrastructure</text>
+    <text x="360" y="249" class="put">仓储实现 · Mapper · 外部接口适配</text>
+    <text x="700" y="249" class="no">✗ 业务规则 · 流程编排</text>
+  </g>
+  <g>
+    <rect class="row" x="60" y="274" width="820" height="46" rx="6"/>
+    <rect class="tab" x="60" y="274" width="10" height="46" fill="#bf8700"/>
+    <text x="90" y="303" class="name">application</text>
+    <text x="360" y="303" class="put">流程编排 · 事务边界 · 应用服务</text>
+    <text x="700" y="303" class="no">✗ 领域一致性逻辑（内聚到聚合）</text>
+  </g>
+  <g>
+    <rect class="row" x="60" y="328" width="820" height="46" rx="6"/>
+    <rect class="tab" x="60" y="328" width="10" height="46" fill="#1f2328"/>
+    <text x="90" y="357" class="name">web</text>
+    <text x="360" y="357" class="put">Controller · 配置 · 启动类</text>
+    <text x="700" y="357" class="no">✗ 业务逻辑</text>
+  </g>
+
+  <line class="arr" x1="36" y1="118" x2="36" y2="368" marker-end="url(#a)"/>
+  <text x="20" y="250" class="note" transform="rotate(-90 20 250)">依赖方向</text>
+</svg>

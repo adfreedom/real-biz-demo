@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 400" text-rendering="geometricPrecision">
+  <style>
+    .bg{fill:#fafbfc}
+    .title{font:600 20px ui-sans-serif,system-ui,sans-serif;fill:#1f2328}
+    .sub{font:13px ui-sans-serif,system-ui,sans-serif;fill:#656d76}
+    .req{fill:#eaeef2;stroke:#8c959f;stroke-width:1.5}
+    .web{fill:#dafbe1;stroke:#1a7f37;stroke-width:1.5}
+    .asp{fill:#fff8c5;stroke:#bf8700;stroke-width:1.5}
+    .h{font:600 14px ui-sans-serif,system-ui,sans-serif;fill:#1f2328}
+    .t{font:12.5px ui-sans-serif,system-ui,sans-serif;fill:#1f2328}
+    .m{font:12px ui-monospace,Consolas,Menlo,monospace;fill:#1f2328}
+    .note{font:12px ui-sans-serif,system-ui,sans-serif;fill:#656d76}
+    .arr{stroke:#6e7781;stroke-width:1.6;fill:none}
+  </style>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6e7781"/></marker>
+  </defs>
+  <rect class="bg" width="940" height="400"/>
+  <text x="32" y="42" class="title">全局日志切面</text>
+  <text x="32" y="64" class="sub">环绕所有 Web 入口 · 结构化输出 · 注解开关</text>
+
+  <!-- request -->
+  <rect class="req" x="40" y="110" width="140" height="80" rx="8"/>
+  <text x="110" y="140" text-anchor="middle" class="h">HTTP 请求</text>
+  <text x="110" y="162" text-anchor="middle" class="t">@GetMapping</text>
+  <text x="110" y="180" text-anchor="middle" class="t">@PostMapping ...</text>
+
+  <!-- pointcut -->
+  <rect class="asp" x="240" y="100" width="300" height="100" rx="8"/>
+  <rect x="240" y="100" width="300" height="28" rx="8" fill="#bf8700"/>
+  <text x="390" y="120" text-anchor="middle" class="h" fill="#ffffff">@Around 切点判定</text>
+  <text x="258" y="148" class="m">@Loggable || @GetMapping</text>
+  <text x="258" y="166" class="m">|| @PostMapping / Put / Delete</text>
+  <text x="258" y="188" class="m">&& !@Loggdisable</text>
+
+  <!-- proceed -->
+  <rect class="web" x="620" y="110" width="200" height="80" rx="8"/>
+  <text x="720" y="140" text-anchor="middle" class="h">jp.proceed()</text>
+  <text x="720" y="162" text-anchor="middle" class="t">记开始时间</text>
+  <text x="720" y="180" text-anchor="middle" class="t">执行业务方法</text>
+
+  <line class="arr" x1="180" y1="150" x2="236" y2="150" marker-end="url(#a)"/>
+  <line class="arr" x1="540" y1="150" x2="616" y2="150" marker-end="url(#a)"/>
+
+  <!-- branches -->
+  <rect class="web" x="120" y="260" width="340" height="90" rx="8"/>
+  <rect x="120" y="260" width="340" height="26" rx="8" fill="#1a7f37"/>
+  <text x="290" y="278" text-anchor="middle" class="h" fill="#ffffff">正常返回</text>
+  <text x="290" y="306" text-anchor="middle" class="m">logger.info</text>
+  <text x="290" y="326" text-anchor="middle" class="t">URL | Method | Params | Response | Time</text>
+  <text x="290" y="344" text-anchor="middle" class="note">log.enable.detail 切换详略</text>
+
+  <rect class="web" x="500" y="260" width="340" height="90" rx="8" stroke="#cf222e"/>
+  <rect x="500" y="260" width="340" height="26" rx="8" fill="#cf222e"/>
+  <text x="670" y="278" text-anchor="middle" class="h" fill="#ffffff">抛异常</text>
+  <text x="670" y="306" text-anchor="middle" class="m">logger.error</text>
+  <text x="670" y="326" text-anchor="middle" class="t">URL | Method | Params | Time | exception</text>
+  <text x="670" y="344" text-anchor="middle" class="note">rethrow → 全局异常处理器归一</text>
+
+  <line class="arr" x1="700" y1="190" x2="290" y2="256" marker-end="url(#a)"/>
+  <line class="arr" x1="740" y1="190" x2="670" y2="256" marker-end="url(#a)"/>
+
+  <text x="32" y="382" class="note">@Loggable 显式纳入非 Web 方法；@Loggdisable 单点关闭；入参自动跳过 Request/Response/MultipartFile。</text>
+</svg>

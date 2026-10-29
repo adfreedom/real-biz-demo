@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 400" text-rendering="geometricPrecision">
+  <style>
+    .bg{fill:#fafbfc}
+    .title{font:600 20px ui-sans-serif,system-ui,sans-serif;fill:#1f2328}
+    .sub{font:13px ui-sans-serif,system-ui,sans-serif;fill:#656d76}
+    .exec{fill:#1f2328;stroke:#1f2328}
+    .execW{font:600 15px ui-sans-serif,system-ui,sans-serif;fill:#ffffff}
+    .pbox{fill:#ffffff;stroke:#d0d7de;stroke-width:1}
+    .pname{font:600 13px ui-sans-serif,system-ui,sans-serif;fill:#1f2328}
+    .prole{font:11.5px ui-sans-serif,system-ui,sans-serif;fill:#656d76}
+    .badge{fill:#0969da}
+    .badgeT{font:600 11px ui-sans-serif,system-ui,sans-serif;fill:#ffffff}
+    .arr{stroke:#6e7781;stroke-width:1.8;fill:none}
+    .fan{stroke:#6e7781;stroke-width:1.2;fill:none;stroke-dasharray:3 3}
+    .note{font:12px ui-sans-serif,system-ui,sans-serif;fill:#656d76}
+  </style>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6e7781"/></marker>
+  </defs>
+  <rect class="bg" width="940" height="400"/>
+  <text x="32" y="42" class="title">processor 编排入口</text>
+  <text x="32" y="64" class="sub">TradeActionExecutor · TreeSet 构造时一次排序 · Spring 自动收集</text>
+
+  <!-- executor -->
+  <rect class="exec" x="300" y="90" width="340" height="56" rx="8"/>
+  <text x="470" y="115" text-anchor="middle" class="execW">TradeActionExecutor</text>
+  <text x="470" y="135" text-anchor="middle" class="note" fill="#c9d1d9">placeProcess(ctx) · settleProcess(ctx)</text>
+
+  <!-- fan-out to processors -->
+  <line class="fan" x1="470" y1="146" x2="470" y2="178"/>
+  <line class="fan" x1="120" y1="178" x2="820" y2="178"/>
+  <line class="fan" x1="120" y1="178" x2="120" y2="210"/>
+  <line class="fan" x1="330" y1="178" x2="330" y2="210"/>
+  <line class="fan" x1="540" y1="178" x2="540" y2="210"/>
+  <line class="fan" x1="750" y1="178" x2="750" y2="210"/>
+
+  <!-- processors -->
+  <g>
+    <rect class="pbox" x="50" y="210" width="140" height="80" rx="8"/>
+    <text x="120" y="240" text-anchor="middle" class="pname">OrderNoGenerator</text>
+    <text x="120" y="262" text-anchor="middle" class="prole">生成订单号（UUID）</text>
+    <circle class="badge" cx="180" cy="226" r="13"/><text x="180" y="230" text-anchor="middle" class="badgeT">1</text>
+  </g>
+  <g>
+    <rect class="pbox" x="260" y="210" width="140" height="80" rx="8"/>
+    <text x="330" y="240" text-anchor="middle" class="pname">ItemValidation</text>
+    <text x="330" y="262" text-anchor="middle" class="prole">商品行校验</text>
+    <circle class="badge" cx="390" cy="226" r="13"/><text x="390" y="230" text-anchor="middle" class="badgeT">10</text>
+  </g>
+  <g>
+    <rect class="pbox" x="470" y="210" width="140" height="80" rx="8"/>
+    <text x="540" y="240" text-anchor="middle" class="pname">PriceCalc</text>
+    <text x="540" y="262" text-anchor="middle" class="prole">价格计算</text>
+    <circle class="badge" cx="600" cy="226" r="13"/><text x="600" y="230" text-anchor="middle" class="badgeT">50</text>
+  </g>
+  <g>
+    <rect class="pbox" x="680" y="210" width="140" height="80" rx="8"/>
+    <text x="750" y="240" text-anchor="middle" class="pname">Payment</text>
+    <text x="750" y="262" text-anchor="middle" class="prole">支付信息装配</text>
+    <circle class="badge" cx="810" cy="226" r="13"/><text x="810" y="230" text-anchor="middle" class="badgeT">90</text>
+  </g>
+
+  <!-- sequence arrows -->
+  <line class="arr" x1="190" y1="250" x2="256" y2="250" marker-end="url(#a)"/>
+  <line class="arr" x1="400" y1="250" x2="466" y2="250" marker-end="url(#a)"/>
+  <line class="arr" x1="610" y1="250" x2="676" y2="250" marker-end="url(#a)"/>
+
+  <text x="32" y="338" class="note">sort 值唯一（1 / 10 / 50 / 90），TreeSet 构造时排定，调用时 forEach 按序执行 —— 不在热路径上重复排序。</text>
+  <text x="32" y="360" class="note">新增 processor 仅需实现接口 + @Component，Spring 自动注入 List —— 编排器无需修改（开闭原则）。</text>
+</svg>

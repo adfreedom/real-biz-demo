@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 620" text-rendering="geometricPrecision">
+  <style>
+    .bg{fill:#fafbfc}
+    .title{font:600 20px ui-sans-serif,system-ui,sans-serif;fill:#1f2328}
+    .sub{font:13px ui-sans-serif,system-ui,sans-serif;fill:#656d76}
+    .box{fill:#ffffff;stroke:#d0d7de;stroke-width:1}
+    .core{fill:#1f2328;stroke:#1f2328}
+    .coreW{font:600 15px ui-sans-serif,system-ui,sans-serif;fill:#ffffff}
+    .name{font:600 13.5px ui-sans-serif,system-ui,sans-serif;fill:#1f2328}
+    .role{font:11.5px ui-sans-serif,system-ui,sans-serif;fill:#656d76}
+    .badge{fill:#0969da}
+    .badgeT{font:600 11px ui-sans-serif,system-ui,sans-serif;fill:#ffffff}
+    .lock{fill:#1a7f37}
+    .lockT{font:600 11px ui-sans-serif,system-ui,sans-serif;fill:#ffffff}
+    .arr{stroke:#6e7781;stroke-width:1.8;fill:none}
+    .bandOut{fill:#fff8c5;stroke:#e3b341;stroke-width:1;stroke-dasharray:0}
+    .bandIn{fill:#dafbe1;stroke:#1a7f37;stroke-width:1}
+    .bandT{font:600 12px ui-sans-serif,system-ui,sans-serif}
+    .note{font:12px ui-sans-serif,system-ui,sans-serif;fill:#656d76}
+    .agg{fill:#f6f8fa;stroke:#8250df;stroke-width:1.4}
+    .aggT{font:600 12.5px ui-sans-serif,system-ui,sans-serif;fill:#8250df}
+  </style>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6e7781"/></marker>
+  </defs>
+  <rect class="bg" width="940" height="620"/>
+  <text x="32" y="40" class="title">下单场景编排</text>
+  <text x="32" y="62" class="sub">placeOrder · 事务外编排 + 聚合内聚 · 事务内仅落库</text>
+
+  <!-- placeOrder -->
+  <rect class="core" x="320" y="84" width="300" height="50" rx="8"/>
+  <text x="470" y="108" text-anchor="middle" class="coreW">placeOrder(request)</text>
+  <rect class="lock" x="566" y="76" width="118" height="20" rx="10"/>
+  <text x="625" y="90" text-anchor="middle" class="lockT">@ConcurrencyFilter</text>
+  <line class="arr" x1="470" y1="134" x2="470" y2="158" marker-end="url(#a)"/>
+
+  <!-- OrderFactory -->
+  <rect class="box" x="320" y="160" width="300" height="44" rx="8"/>
+  <text x="470" y="187" text-anchor="middle" class="name">OrderFactory.create(request) → context</text>
+  <line class="arr" x1="470" y1="204" x2="470" y2="226" marker-end="url(#a)"/>
+
+  <!-- 事务外 band -->
+  <rect class="bandOut" x="40" y="228" width="860" height="158" rx="10"/>
+  <text x="58" y="250" class="bandT" fill="#7d4e00">事务外</text>
+  <rect class="core" x="350" y="244" width="240" height="38" rx="8"/>
+  <text x="470" y="268" text-anchor="middle" class="coreW">tradeActionExecutor.placeProcess(ctx)</text>
+
+  <!-- processors -->
+  <g>
+    <rect class="box" x="64" y="300" width="180" height="68" rx="8"/>
+    <text x="154" y="324" text-anchor="middle" class="name">OrderNoGenerator</text>
+    <text x="154" y="344" text-anchor="middle" class="role">单号下推子实体</text>
+    <text x="154" y="360" text-anchor="middle" class="role" fill="#8250df">→ assignOrderNo</text>
+    <circle class="badge" cx="232" cy="314" r="12"/><text x="232" y="318" text-anchor="middle" class="badgeT">1</text>
+  </g>
+  <g>
+    <rect class="box" x="268" y="300" width="180" height="68" rx="8"/>
+    <text x="358" y="324" text-anchor="middle" class="name">ItemValidation</text>
+    <text x="358" y="344" text-anchor="middle" class="role">商品行校验+小计</text>
+    <circle class="badge" cx="436" cy="314" r="12"/><text x="436" y="318" text-anchor="middle" class="badgeT">10</text>
+  </g>
+  <g>
+    <rect class="box" x="472" y="300" width="180" height="68" rx="8"/>
+    <text x="562" y="324" text-anchor="middle" class="name">PriceCalc</text>
+    <text x="562" y="344" text-anchor="middle" class="role">重算总金额</text>
+    <text x="562" y="360" text-anchor="middle" class="role" fill="#8250df">→ recalculateTotalAmount</text>
+    <circle class="badge" cx="640" cy="314" r="12"/><text x="640" y="318" text-anchor="middle" class="badgeT">50</text>
+  </g>
+  <g>
+    <rect class="box" x="676" y="300" width="200" height="68" rx="8"/>
+    <text x="776" y="324" text-anchor="middle" class="name">Payment</text>
+    <text x="776" y="344" text-anchor="middle" class="role">补支付单号</text>
+    <circle class="badge" cx="856" cy="314" r="12"/><text x="856" y="318" text-anchor="middle" class="badgeT">90</text>
+  </g>
+  <line class="arr" x1="244" y1="334" x2="266" y2="334" marker-end="url(#a)"/>
+  <line class="arr" x1="448" y1="334" x2="470" y2="334" marker-end="url(#a)"/>
+  <line class="arr" x1="652" y1="334" x2="674" y2="334" marker-end="url(#a)"/>
+  <line class="arr" x1="470" y1="386" x2="470" y2="408" marker-end="url(#a)"/>
+
+  <!-- 聚合内聚 -->
+  <rect class="agg" x="300" y="410" width="340" height="46" rx="8"/>
+  <text x="470" y="438" text-anchor="middle" class="aggT">group.joinGroup(orderList, userId)</text>
+  <line class="arr" x1="470" y1="456" x2="470" y2="478" marker-end="url(#a)"/>
+
+  <!-- 事务内 band -->
+  <rect class="bandIn" x="40" y="480" width="860" height="96" rx="10"/>
+  <text x="58" y="502" class="bandT" fill="#1a7f37">事务内</text>
+  <rect class="box" x="150" y="512" width="300" height="48" rx="8"/>
+  <text x="300" y="540" text-anchor="middle" class="name">mergePayGroupRepository.saveChanges(group)</text>
+  <rect class="box" x="490" y="512" width="300" height="48" rx="8"/>
+  <text x="640" y="540" text-anchor="middle" class="name">salesOrderRepository.saveChanges(orders)</text>
+  <text x="470" y="606" text-anchor="middle" class="note">return context.buildResults() —— 事务只包住落库，编排与聚合调用均在事务外</text>
+</svg>

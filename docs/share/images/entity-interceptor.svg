@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 420" text-rendering="geometricPrecision">
+  <style>
+    .bg{fill:#fafbfc}
+    .title{font:600 20px ui-sans-serif,system-ui,sans-serif;fill:#1f2328}
+    .sub{font:13px ui-sans-serif,system-ui,sans-serif;fill:#656d76}
+    .step{fill:#ffffff;stroke:#d0d7de;stroke-width:1}
+    .fnd{fill:#ddf4ff;stroke:#0969da;stroke-width:1.5}
+    .biz{fill:#dafbe1;stroke:#1a7f37;stroke-width:1.5}
+    .h{font:600 13px ui-sans-serif,system-ui,sans-serif;fill:#1f2328}
+    .t{font:12px ui-sans-serif,system-ui,sans-serif;fill:#1f2328}
+    .m{font:11.5px ui-monospace,Consolas,Menlo,monospace;fill:#1f2328}
+    .note{font:12px ui-sans-serif,system-ui,sans-serif;fill:#656d76}
+    .arr{stroke:#6e7781;stroke-width:1.6;fill:none}
+    .ins{fill:#0969da;font:600 11px ui-sans-serif,system-ui,sans-serif}
+    .upd{fill:#1a7f37;font:600 11px ui-sans-serif,system-ui,sans-serif}
+    .del{fill:#cf222e;font:600 11px ui-sans-serif,system-ui,sans-serif}
+  </style>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6e7781"/></marker>
+  </defs>
+  <rect class="bg" width="940" height="420"/>
+  <text x="32" y="42" class="title">数据落库的差量链路</text>
+  <text x="32" y="64" class="sub">加载即建快照 · 落库按 isTransient / isModified / isDeleted 分流</text>
+
+  <!-- load -->
+  <rect class="fnd" x="40" y="110" width="220" height="120" rx="8"/>
+  <text x="150" y="136" text-anchor="middle" class="h">加载（SELECT）</text>
+  <text x="150" y="158" text-anchor="middle" class="m">mapper.selectList(...)</text>
+  <text x="150" y="184" text-anchor="middle" class="t">EntitySelectInterceptor</text>
+  <text x="150" y="202" text-anchor="middle" class="t">@Intercepts Executor.query</text>
+  <text x="150" y="222" text-anchor="middle" class="m">entity.monitor() 建快照</text>
+
+  <!-- modify -->
+  <rect class="biz" x="360" y="110" width="220" height="120" rx="8"/>
+  <text x="470" y="136" text-anchor="middle" class="h">业务改字段</text>
+  <text x="470" y="160" text-anchor="middle" class="m">order.setTotalAmount(...)</text>
+  <text x="470" y="180" text-anchor="middle" class="m">item.setSubtotal(...)</text>
+  <text x="470" y="206" text-anchor="middle" class="t">快照不变，当前值变</text>
+  <text x="470" y="222" text-anchor="middle" class="t">isModified() → true</text>
+
+  <!-- save -->
+  <rect class="fnd" x="680" y="110" width="220" height="120" rx="8"/>
+  <text x="790" y="136" text-anchor="middle" class="h">saveChanges</text>
+  <text x="790" y="158" text-anchor="middle" class="m">RepositoryUtils</text>
+  <text x="790" y="182" text-anchor="middle" class="t">isTransient / isModified</text>
+  <text x="790" y="200" text-anchor="middle" class="t">/ isDeleted 三路分流</text>
+  <text x="790" y="222" text-anchor="middle" class="t">事务内执行</text>
+
+  <line class="arr" x1="260" y1="170" x2="356" y2="170" marker-end="url(#a)"/>
+  <line class="arr" x1="580" y1="170" x2="676" y2="170" marker-end="url(#a)"/>
+
+  <!-- three branches -->
+  <rect class="step" x="60" y="280" width="240" height="70" rx="8"/>
+  <text x="180" y="306" text-anchor="middle" class="ins">增：isTransient（id 为空）</text>
+  <text x="180" y="328" text-anchor="middle" class="m">insertBatchSomeColumn</text>
+  <text x="180" y="346" text-anchor="middle" class="note">分片批量插入</text>
+
+  <rect class="step" x="350" y="280" width="240" height="70" rx="8"/>
+  <text x="470" y="306" text-anchor="middle" class="upd">改：isModified（快照≠当前）</text>
+  <text x="470" y="328" text-anchor="middle" class="m">updateById</text>
+  <text x="470" y="346" text-anchor="middle" class="note">@Version 乐观锁兜底</text>
+
+  <rect class="step" x="640" y="280" width="240" height="70" rx="8"/>
+  <text x="760" y="306" text-anchor="middle" class="del">删：isDeleted = 1</text>
+  <text x="760" y="328" text-anchor="middle" class="m">deleteBatchIds</text>
+  <text x="760" y="346" text-anchor="middle" class="note">逻辑删除标记触发物理删</text>
+
+  <line class="arr" x1="760" y1="230" x2="180" y2="276" marker-end="url(#a)"/>
+  <line class="arr" x1="790" y1="230" x2="470" y2="276" marker-end="url(#a)"/>
+  <line class="arr" x1="820" y1="230" x2="760" y2="276" marker-end="url(#a)"/>
+
+  <text x="32" y="392" class="note">仓储只把聚合各部分丢给 saveChanges；快照建立、变更识别、增改删分流全在基础设施层，业务零感知。</text>
+</svg>
